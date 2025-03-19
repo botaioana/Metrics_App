@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevSecOps Metrics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #dashboard {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .metric-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            width: 200px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        canvas {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>DevSecOps Metrics Dashboard</h1>
+    
+    <div id="dashboard">
+        <div class="metric-box" id="attack-prevented">
+            <h3>Atacuri Prevenite</h3>
+            <p>Loading...</p>
+        </div>
+        <div class="metric-box" id="vulnerabilities-found">
+            <h3>Vulnerabilități Găsite</h3>
+            <p>Loading...</p>
+        </div>
+        <div class="metric-box" id="response-time">
+            <h3>Timp de Răspuns</h3>
+            <p>Loading...</p>
+        </div>
+        <div class="metric-box" id="cpu-usage">
+            <h3>Utilizare CPU</h3>
+            <p>Loading...</p>
+        </div>
+        <div class="metric-box" id="memory-usage">
+            <h3>Utilizare Memorie</h3>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <canvas id="performanceChart" width="400" height="200"></canvas>
+
+    <script>
+        // Funcția care obține datele de metrici din API
+        function fetchMetrics() {
+            fetch('/api/metrics')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("attack-prevented").innerHTML = `<h3>Atacuri Prevenite</h3><p>${data.attack_prevented}</p>`;
+                    document.getElementById("vulnerabilities-found").innerHTML = `<h3>Vulnerabilități Găsite</h3><p>${data.vulnerabilities_found}</p>`;
+                    document.getElementById("response-time").innerHTML = `<h3>Timp de Răspuns</h3><p>${data.response_time} s</p>`;
+                    document.getElementById("cpu-usage").innerHTML = `<h3>Utilizare CPU</h3><p>${data.cpu_usage}%</p>`;
+                    document.getElementById("memory-usage").innerHTML = `<h3>Utilizare Memorie</h3><p>${data.memory_usage}%</p>`;
+
+                    updateChart(data);
+                });
+        }
+
+        // Funcția care actualizează graficul
+        function updateChart(data) {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['CPU Usage', 'Memory Usage', 'Response Time'],
+                    datasets: [{
+                        label: 'Performance Metrics',
+                        data: [data.cpu_usage, data.memory_usage, data.response_time * 100], // Se multiplică timpul de răspuns pentru a-l face vizibil pe grafic
+                        backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56'],
+                        borderColor: ['#ff6384', '#36a2eb', '#ffcd56'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Încarcă metricile când pagina este gata
+        window.onload = function() {
+            fetchMetrics();
+        }
+    </script>
+</body>
+</html>
