@@ -8,6 +8,7 @@ Aceasta este o aplicație simplă Flask pentru a demonstra un proiect minimal.
    ```bash
    git clone https://github.com/username/proiectul-tau.git
    cd proiectul-tau
+   ```
 
 ### 2. Instalează dependențele:
    ```bash
